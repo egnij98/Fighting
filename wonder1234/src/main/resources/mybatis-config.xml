@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+
+     <typeAlias alias="NoticeDTO" type="kr.co.wonder.notice.NoticeDTO"/>
+     <typeAlias alias="AdminProductDTO" type="kr.co.wonder.admin.AdminProductDTO"/>
+     <typeAlias alias="AdminMemDTO" type="kr.co.wonder.admin.AdminMemDTO"/>
+     <typeAlias alias="AdminNoticeDTO" type="kr.co.wonder.admin.AdminNoticeDTO"/>
+     <typeAlias alias="AdminAuctionDTO" type="kr.co.wonder.admin.AdminAuctionDTO"/>
+     <typeAlias alias="AdminInquiryDTO" type="kr.co.wonder.admin.AdminInquiryDTO"/>
+	 <typeAlias alias="MemberDTO"  type="kr.co.wonder.member.MemberDTO"/>
+	 <typeAlias alias="ProductDTO"  type="kr.co.wonder.product.ProductDTO"/>
+	 <typeAlias alias="wishlistDTO"  type="kr.co.wonder.mypage.wishlistDTO"/>
+	 <typeAlias alias="BuyofGoodsDTO"  type="kr.co.wonder.mypage.BuyofGoodsDTO"/>
+	 <typeAlias alias="SaleofGoodsDTO"  type="kr.co.wonder.mypage.SaleofGoodsDTO"/>
+	 <typeAlias alias="OrderHistoryDTO"  type="kr.co.wonder.mypage.OrderHistoryDTO"/>
+	 <typeAlias alias="CartDTO"  type="kr.co.wonder.product.CartDTO"/>
+	 <typeAlias alias="OrderDTO"  type="kr.co.wonder.product.OrderDTO"/>
+	 <typeAlias alias="AuctionBoardDTO"  type="kr.co.wonder.auction.AuctionBoardDTO"/>
+	 <typeAlias alias="AuctionBoardReplyDTO"  type="kr.co.wonder.auction.AuctionBoardReplyDTO"/>
+	 <typeAlias alias="AuctionBuyerDTO"  type="kr.co.wonder.auction.AuctionBuyerDTO"/>
+	 <typeAlias alias="AuctionOrderDTO"  type="kr.co.wonder.auction.AuctionOrderDTO"/>
+	 <typeAlias alias="AuctionPageVO"  type="kr.co.wonder.auction.AuctionPageVO"/>
+	 <typeAlias alias="InquiryDTO" type="kr.co.wonder.notice.InquiryDTO"/>
+	 <typeAlias alias="NoticeDTO" type="kr.co.wonder.notice.NoticeDTO"/>
+	 </typeAliases>
+</configuration>

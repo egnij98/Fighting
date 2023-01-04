@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace ="kr.co.wonder.memberMapper">
+
+<!--  회원가입  -->
+	<insert id="addmember" parameterType="MemberDTO">
+		INSERT INTO member
+		(mem_id,mem_password,mem_name,mem_address,mem_address1,mem_address2,mem_nickname,mem_phonenum,mem_email1,mem_gender,mem_birth
+		,mem_cash,mem_hint1,mem_hint2,mem_first)
+		VALUES( #{mem_id},#{mem_password},#{mem_name},#{mem_address},#{mem_address1},#{mem_address2},#{mem_nickname},#{mem_phonenum},
+		#{mem_email1},#{mem_gender},#{mem_birth},0,#{mem_hint1},#{mem_hint2},NOW())
+	</insert>
+
+<!--  아이디 중복 체크 -->	
+	<select id="idcheck"  parameterType="java.lang.String" resultType="java.lang.String">
+		select mem_id 
+		from member
+		where mem_id = #{mem_id}
+	</select>
+
+<!-- 로그인 처리 -->
+	<select id="login"  parameterType="MemberDTO" resultType="MemberDTO">
+		select *
+		from member
+		where mem_id=#{mem_id} and mem_password=#{mem_password}
+		</select>
+	
+	
+<!-- 아이디 찾기 -->
+	<select id="idfind" parameterType="java.util.Map" resultType="java.lang.String">
+		select mem_id
+		from member
+		where mem_name=#{mem_name} and mem_phonenum=#{mem_phonenum}
+	</select>	
+	
+<!-- 아이디 찾기 유효성 -->
+	<select id="idfindcheck" resultType="int">
+		select count(*)
+		from member
+		where mem_name=#{mem_name} and mem_phonenum=#{mem_phonenum}
+	</select>
+	
+<!--  비밀번호 찾기  -->
+	<select id ="pwfind" resultType="java.lang.Integer">
+		select count(*) 
+		from member
+		where mem_id=#{mem_id} and mem_hint1=#{mem_hint1} and mem_hint2=#{mem_hint2}
+	</select>
+
+<!--  비밀번호 수정 -->
+	<update id="pwupdate" parameterType="MemberDTO" >
+		update member
+		set
+		mem_password=#{mem_password}
+		where mem_id=#{mem_id}
+		
+	</update>		
+	
+<!--  마이페이지 -->
+	<select id="mypage" parameterType="MemberDTO" resultType ="MemberDTO">
+		select *
+		from member
+		where mem_id=#{mem_id}
+	</select>
+	
+<!--  프로필 수정 -->
+	<select id="profileUpdate" parameterType="MemberDTO">
+		update member
+		set
+		mem_name=#{mem_name},mem_nickname=#{mem_nickname},mem_address1=#{mem_address1},mem_address2=#{mem_address2},
+		mem_homenum=#{mem_homenum},mem_phonenum=#{mem_phonenum},mem_email1=#{mem_email1}
+		where mem_id=#{mem_id}
+	</select>
+	
+	<!--  회원탈퇴 비밀번호체크 -->
+	<select id="pwCheck" resultType="String">
+		select mem_password
+		form member
+		where mem_id=#{mem_id}
+	</select>
+		
+	<!--  회원탈퇴 -->
+	<delete id="memberDelete">
+		delete 
+		from member
+		where mem_id=#{mem_id} and mem_password=#{mem_password}
+		
+	</delete>
+	
+	<!--  캐쉬충전 -->
+	<update id="charge" parameterType="MemberDTO">
+		update member
+		set
+		mem_charge='충전신청', mem_amount=#{mem_amount} , mem_chargedate=NOW()
+		where mem_id=#{mem_id}
+	</update>
+	<!--  캐쉬충전내역 조회 -->
+	<select id="chargelist" parameterType="MemberDTO" resultType="MemberDTO">
+		select *
+		from member
+		where mem_id=#{mem_id}
+	</select>
+	
+	<!--  캐쉬출금 -->
+	<update id="withdraw" parameterType="MemberDTO">
+		update member
+		set
+		mem_withdraw='출금신청', mem_amount1=#{mem_amount1} , mem_drawdate=NOW()
+		where mem_id=#{mem_id}
+	</update>
+	
+	<!--  캐쉬출금내역 -->
+	<select id="drawlist" parameterType="MemberDTO" resultType="MemberDTO">
+		select *
+		from member
+		where mem_id=#{mem_id}
+	</select>
+	
+	<!--회원 검색 -->
+	<select id="serchmember"  resultType="MemberDTO">
+		select *
+		from member
+		where mem_id = #{mem_id} 
+	</select>
+</mapper>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "kr.co.wonder.auctionMapper">
+
+
+	<!-- 경매 전체 목록 -->
+	<select id="auctionlist" resultType="AuctionBoardDTO">
+	
+		select *
+		from auction_board
+		order by ab_id desc
+	 
+	</select>
+	
+
+	<!-- 상품 보기 -->
+	<select id="auctionproductdetail" parameterType="String" resultType="AuctionBoardDTO">
+		select *
+		from auction_board
+		where ab_id = #{ab_id}
+		
+	</select>
+	<select id="auctionproductdetail2" parameterType="String" resultType="AuctionBoardDTO">
+		select *
+		from auction_board
+		where ab_id = #{ab_id}
+		
+	</select>
+
+
+	<!-- 상품 등록 -->
+	<insert id = "auctionaddproduct" parameterType="AuctionBoardDTO">
+	
+	insert into
+	auction_board
+	(ab_title,ab_limit,ab_currentprice,ab_startprice,ab_minimumprice,ab_endprice,ab_category,ab_content,ab_pricerise)
+	values(#{ab_title},#{ab_limit},#{ab_startprice},#{ab_startprice},#{ab_minimumprice},#{ab_endprice},#{ab_category},#{ab_content},#{ab_pricerise})
+	
+	</insert>
+	
+	<!-- 상품 최고 입찰가 -->
+	<select id="pricecheck" parameterType="String" resultType="java.lang.Integer">
+	
+	select ab_currentprice
+	from auction_board
+	where ab_id = #{value}
+	
+	
+	</select>
+	<!-- 입찰 -->
+	<update id="updatebid" parameterType="kr.co.wonder.auction.AuctionBid">
+  	update auction_board set ab_currentprice = #{total},mem_id=#{mem_id} where ab_id = #{ab_id}
+  </update>
+	<!-- 상품 수정 -->
+	<update id = "auctionproductupdate" parameterType="AuctionBoardDTO">
+	
+	update 
+	auction_board set
+	ab_title = #{ab_title}, ab_limit = #{ab_limit}, ab_currentprice = #{ab_currentprice}, ab_startprice = #{ab_startprice},
+	ab_minimumprice = #{ab_minimumprice}, ab_endprice = #{ab_endprice}, ab_category = #{ab_category}, ab_content = #{ab_content}
+	where ab_id = #{ab_id}
+	
+	</update>
+	
+	<!-- 상품 삭제 -->
+	<delete id= "auctionproductdelete" parameterType="String">
+	
+	delete from
+	auction_board
+	where ab_id = #{ab_id}
+	</delete>
+	
+	<!-- 경매 페이징2 -->
+	<select id="AuctionPageVO" resultType="AuctionBoardDTO">
+	<![CDATA[
+	select *
+	from auction_board
+	
+	order by ab_id desc
+	limit #{pageStart}, #{perPageNum};
+	]]>
+	</select>
+	
+	<!-- 경매 페이징1 -->
+	<select id="listPage" resultType="AuctionBoardDTO">
+	<![CDATA[
+	select *
+	from auction_board
+	order by ab_id desc
+	limit #{page},6
+	]]>
+	
+	</select>
+ 	<!-- 경매 검색 -->
+	<select id="listPageSearch" resultType="AuctionBoardDTO">
+	<![CDATA[
+	select *
+	from auction_board
+	 <if test='searchType.equals("ab_title")'>
+ 	 WHERE title LIKE concat('%', #{keyword}, '%')
+	 </if>
+	order by ab_id desc
+	limit #{page},6
+	]]>
+	</select>
+	
+	
+
+	<!-- 경매 목록 총 상품 갯수	--> 
+	<select id="countPaging" resultType="int">
+	<![CDATA[
+	select count(ab_id)
+	from auction_board
+	]]>
+	
+	
+	</select>
+
+	
+
+</mapper>

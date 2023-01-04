@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "kr.co.wonder.NoticeMapper">
+	
+	<!--  공지사항 목록 -->
+	<select id="noticelist" parameterType="java.lang.Integer" resultType="NoticeDTO">
+	select * from notice
+	order by notice_id desc
+	
+	</select>
+	<!-- 공지사항 상세 -->
+	<select id="noticedetail" parameterType="java.lang.Integer" resultType="NoticeDTO">
+	select * from notice
+	where notice_id=#{notice_id}
+	</select>
+	<!-- 1:1문의 등록 -->	
+	<insert id="inquiryadd" parameterType="InquiryDTO">
+	insert into inquiry
+	(inquiry_title,inquiry_content,inquiry_state,inquiry_date,inquiry_sort,mem_id)
+	values(#{inquiry_title},#{inquiry_content},1,curdate(),#{inquiry_sort},#{mem_id})
+	
+	</insert>
+	<!--  게시판 페이징 -->
+	<select id="listPage" resultType="NoticeDTO">
+	<![CDATA[
+	select 
+		notice_id,notice_title,notice_content,notice_date,notice_sort
+	from
+		notice
+	where notice_sort=#{notice_sort}
+	
+	order by notice_id desc
+	limit #{page},10
+	]]>
+	</select>
+	<select id="listCriteria" resultType="NoticeDTO">
+	<![CDATA[
+	select
+		notice_id,notice_title,notice_content,notice_date,notice_sort
+	from
+		notice
+	where notice_sort=#{notice_sort}
+	
+	order by notice_id desc
+	limit #{pageStart},#{perPageNum}
+	
+	]]>
+	</select>
+	
+	<select id="countPaging" resultType="int">
+	<![CDATA[
+	select
+		count(notice_id)
+	from
+		notice
+	where notice_sort=#{notice_sort}
+	
+	]]>
+	</select>
+	
+	
+</mapper>

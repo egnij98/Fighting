@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace = "kr.co.mypage.myPageMapper">
+  
+  <!--찜하기(추가) -->
+  	<insert id="choiceinsert" parameterType="wishlistDTO">
+  	INSERT INTO wishlist (wish_id, mem_id, product_name) 
+  	VALUES (#{wish_id}, #{mem_id}, #{product_name});
+  	</insert>
+  	
+  	
+  	<!-- 찜목록 확인  -->
+  	<select id="wishlist" resultType="wishlistDTO">
+	select * from
+	wishlist where mem_id=#{mem_id}
+	</select>
+	
+  	
+  	<!-- 찜목록 삭제-->
+  	<delete id="deleteOne">
+  		delete from
+  		 wishlist 
+  		where mem_id = #{mem_id} and wish_id = #{wish_id}
+  	</delete>
+  	
+  	
+  	<!-- 이미 찜한 상품인지 조회 -->
+  	<select id="serchingWishlist" resultType="wishlistDTO">
+  		select * 
+  		from wishlist 
+  		where mem_id = #{mem_id} and product_name = #{product_name}
+  	</select>
+  	
+  	
+  	<!-- 장바구니 확인  -->
+  	<select id="cartlist" resultType="CartDTO">
+	select * from
+	cart where mem_id=#{mem_id}
+	</select>
+	
+	
+	<!-- 장바구니 목록 -->
+	<select id="selectCart" resultType="ProductDTO">
+	select * from
+		product where product_id =#{product_id}
+	</select>
+	
+	
+	<!-- 장바구니 삭제 -->
+	<delete id="delectCart">
+		DELETE FROM cart 
+		WHERE cart_id = #{cart_id} AND mem_id =${mem_id};
+	</delete>
+	
+	<!-- 판매중이거나 판매 완료된상품 sale 테이블에서 검색-->
+		<select id="saleofgoods" resultType="SaleofGoodsDTO">
+			select * 
+			from saleshistory 
+			where mem_id = #{mem_id} 
+		</select>
+		
+	<!-- prodcut 테이블에서 mem_id로 구분지어 판매완료상품검색-->
+		<select id="salescompleted" resultType="ProductDTO">
+			select *
+			from product
+			where mem_id=#{mem_id} and product_code="판매완료"
+		</select>
+		
+	<!-- prodcut 테이블에서 mem_id로 구분지어 판매중인상품검색-->
+		<select id="onsale">
+			select *
+			from product
+			where mem_id=#{mem_id} and product_code="판매중"
+		</select>
+	<!-- 판매가 완료되면 product_code 판매중에서->판매완료로 변경 -->
+		<update id="updatecode">
+			UPDATE product
+			SET product_code = '판매완료' 
+			WHERE product_name = '#{product_name} and mem_id=#{mem_id};
+		</update>
+	
+	<!-- 판매내역 salehistory테이블에서삭제 -->
+		<delete id="delsalehistory">
+			DELETE FROM 
+			saleshistory
+			WHERE mem_id=#{mem_id} and product_name =#{product_name}
+
+		</delete>
+		<!-- product테이블 상품이 삭제가 안되어서 코드로 "삭제"라고 구분지어놓음 -->
+		<update id="delsalehistory2">
+			UPDATE product
+			SET product_code = "삭제" 
+			WHERE product_name = #{product_name} and mem_id=#{mem_id};
+		</update>
+	
+		
+	<!-- 구매내역 보기 -->
+		<select id="buyofgoods" resultType="BuyofGoodsDTO">
+			select * 
+			from orderhistory 
+			
+			where mem_id = #{mem_id}
+		</select>
+	
+	<!-- prodcut 테이블에서 mem_id로 구분지어 구매완료상품검색-->
+		<select id="buycompleted" resultType="ProductDTO">
+			select *
+			from product
+			where mem_id=#{mem_id} and product_code="구매완료"
+		</select>
+		
+	<!-- prodcut 테이블에서 mem_id로 구분지어 구매예약중인상품검색-->
+		<select id="onbuy">
+			select *
+			from product
+			where mem_id=#{mem_id} and product_code="구매입찰"
+		</select>
+	<!-- 구매가 완료되면 product_code 구매입찰중에서->구매완료로 변경 -->
+		<update id="updatecodebuy">
+			UPDATE product
+			SET product_code = '판매완료' 
+			WHERE product_name = '#{product_name} and mem_id=#{mem_id};
+		</update>
+	
+	<!-- 판매내역 orderhistoty테이블에서삭제 -->
+		<delete id="delbuyhistory">
+			DELETE FROM 
+			orderhistory
+			WHERE mem_id=#{mem_id} and product_name =#{product_name}
+
+		</delete>
+		<!-- product테이블 상품이 삭제가 안되어서 코드로 "삭제"라고 구분지어놓음 -->
+		<update id="delbuyhistory2">
+			UPDATE product
+			SET product_code = "삭제" 
+			WHERE product_name = #{product_name} and mem_id=#{mem_id};
+		</update>
+		
+		<!-- 구매입찰 걸어논 상품 표시 -->
+		<select id="buyselect"  parameterType="java.lang.String" resultType="ProductDTO">
+		select * 
+		from product where product_code= '구매입찰' and mem_id=#{mem_id}
+		</select>
+		<!-- 구매 입찰 걸어논 상품 취소및삭제 -->
+		<delete id="buydel" parameterType="ProductDTO">
+			DELETE FROM 
+			product
+			WHERE mem_id=#{mem_id} and product_name =#{product_name} and product_code = '구매입찰'
+
+		</delete>
+		<!-- 판매입찰 product테이블에 추가 -->
+			<insert id="insertsale">
+				
+			</insert>
+		<!-- 판매입찰걸어논 상품 표시 -->
+		<select id="saleselect"  parameterType="java.lang.String" resultType="ProductDTO">
+		select * 
+		from product where product_code= '판매입찰' and mem_id=#{mem_id}
+		</select>
+		<!-- 판매 입찰 걸어논 상품 취소및삭제 -->
+		<delete id="saledel" parameterType="ProductDTO">
+			DELETE FROM 
+			product
+			WHERE mem_id=#{mem_id} and product_name =#{product_name} and product_code = '판매입찰'
+
+		</delete>
+
+
+	
+  
+
+
+  </mapper>
+  

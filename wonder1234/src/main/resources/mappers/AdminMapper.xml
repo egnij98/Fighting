@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "kr.co.wonder.AdminMapper">
+	
+	<!-- 상품목록 -->
+	<select id="productlist" parameterType="java.lang.Integer" resultType="AdminProductDTO">
+	select * from product where product_auction = 0
+	order by product_id desc
+	</select>
+	
+	<!-- 상품상세 -->
+	<select id="productdetail" parameterType="java.lang.Integer" resultType="AdminProductDTO">
+	select * from product where product_id= #{product_id}
+	
+	</select>
+		
+	<!-- 상품등록 -->
+	<insert id="productadd" parameterType="AdminProductDTO">
+	insert into product
+	(product_id,product_img,product_name,product_desc,product_date,product_auction,product_cate,product_code)
+	values(#{product_id},#{product_img},#{product_name},#{product_desc},curdate(),0,#{product_cate},#{product_code})
+	
+	</insert>
+	
+	
+	<!-- 상품수정 -->
+	<update id="productedit" parameterType="AdminProductDTO">
+	update product
+	set
+	product_name=#{product_name},product_desc=#{product_desc},product_cate=#{product_cate},product_code=#{product_code}
+	where product_id=#{product_id}
+	
+	</update>
+	
+	<!-- 상품삭제 -->
+	<delete id="productdelete" parameterType="java.lang.Integer">
+	delete from product
+	where product_id=#{product_id}
+	
+	</delete>
+	<!-- 회원목록 -->
+	<select id="memsearch" parameterType="java.lang.Integer" resultType="AdminMemDTO">
+	select * from member
+	order by mem_id desc
+	</select>
+	<!-- 회원상세목록 -->
+	<select id="memdetail" parameterType="java.lang.Integer" resultType="AdminMemDTO">
+	select * from member where mem_id= #{mem_id}	
+	</select>
+	<!-- 회원등급 수정 -->
+	<update id="ratingedit">
+	update member
+	set
+	mem_rating=#{mem_rating}
+	where mem_id=#{mem_id}
+	</update>
+	<!-- 캐쉬충전신청 내역 -->
+	<select id="cashcharge" resultType="MemberDTO">
+	select * from member
+	where mem_charge="충전신청"
+	</select>
+	<!-- 캐쉬충전 승인 -->
+	<update id="charge" parameterType="MemberDTO">
+	update member
+	set
+	mem_cash=mem_cash+mem_amount,mem_amount=0,mem_charge='충전완료'
+	where mem_id=#{mem_id}
+	</update>
+	<!-- 캐쉬충전 삭제 -->
+	<update id="chargedelete" parameterType="MemberDTO">
+	update member
+	set
+	mem_amount=0,mem_charge='충전실패',mem_chargedate=curdate() 
+	where mem_id=#{mem_id}
+	</update>
+	<!-- 경매상품목록 -->
+	<select id="auctionlist" parameterType="java.lang.Integer" resultType="AdminAuctionDTO">
+	select * from auction_board
+	order by product_id desc
+	</select>
+	<!-- 경매신고목록 -->
+	<select id="reportlist" parameterType="java.lang.Integer" resultType="AdminAuctionDTO">
+	SELECT * FROM auction_board
+	left join product on product.product_id=auction_board.product_id
+	where auction_board.ab_report=1
+	</select>
+	<!-- 경매상세 -->
+	<select id="auctiondetail" parameterType="java.lang.Integer" resultType="AdminAuctionDTO">
+	select * from auction_board
+	where ab_id=#{ab_id}
+	</select>
+	<!-- 경매삭제 -->
+	<delete id="auctiondelete" parameterType="java.lang.Integer">
+	delete from auction_board
+	where ab_id=#{ab_id}
+	</delete>
+	<!-- 공지사항 등록 -->
+	<insert id="noticeadd" parameterType="AdminNoticeDTO">
+	insert into notice
+	(notice_sort,notice_title,notice_content,notice_date)
+	values(#{notice_sort},#{notice_title},#{notice_content},curdate())
+	</insert>
+	
+	<!-- 공지사항 목록 -->
+	<select id="noticelist" parameterType="java.lang.Integer" resultType="AdminNoticeDTO">
+	select * from notice
+	
+	</select>
+	
+	<!-- 공지사항 종류별 목록 -->
+	<select id="sortlist" resultType="AdminNoticeDTO">
+	select * from notice 
+	where notice_sort=#{notice_sort}
+	</select>
+	<!-- 공지사항 삭제 -->
+	<delete id="noticedelete" parameterType="java.lang.Integer">
+	delete from notice
+	where notice_id=#{notice_id}	
+	</delete>
+	
+	<!-- 공지사항 수정 -->
+	<update id="noticeedit" parameterType="AdminNoticeDTO">
+	update notice
+	set
+	notice_title=#{notice_title},notice_content=#{notice_content}
+	where notice_id=#{notice_id}
+	
+	</update>
+		
+	<!-- 1:1문의 목록  -->
+	<select id="inquirylist" parameterType="java.lang.Integer" resultType="AdminInquiryDTO">
+	select inquiry.inquiry_title,inquiry.inquiry_id,inquiry.inquiry_content,inquiry.inquiry_date,member.mem_id,member.mem_name 
+	from inquiry INNER JOIN member on inquiry.mem_id=member.mem_id	
+	where inquiry_state = 1
+	order by inquiry_date asc
+	</select>
+	<!-- 1:1문의 상세 -->
+	<select id="inquirydetail" parameterType="java.lang.Integer" resultType="AdminInquiryDTO">
+	select inquiry.inquiry_title,inquiry.inquiry_id,inquiry.inquiry_content,inquiry.inquiry_date,member.mem_id,member.mem_name 
+	from inquiry INNER JOIN member on inquiry.mem_id=member.mem_id	 
+	where inquiry_id= #{inquiry_id}	
+	</select>
+	<!-- 1:1문의 답변 -->
+	<insert id="inquiryanswer" parameterType="AdminInquiryDTO">
+	insert into inquiry
+	(inquiry_content,inquiry_date,mem_id,inquiry_state,inquiry_title)
+	values(#{inquiry_content},curdate(),#{mem_id},2,#{inquiry_title})
+	</insert>
+	<!-- 1:1문의 답변완료 -->
+	<update id="inquiryend" parameterType="AdminInquiryDTO">
+	update inquiry
+	set
+	inquiry_state=0
+	where inquiry_id=#{inquiry_id}
+	
+	</update>
+	
+</mapper>
